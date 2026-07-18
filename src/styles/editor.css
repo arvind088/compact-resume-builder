@@ -295,6 +295,68 @@
 	border-top: 1px solid #d7dce2;
 }
 
+.section-controls,
+.entry-stack {
+	display: grid;
+	gap: 12px;
+}
+
+.button-row,
+.inline-row,
+.split-fields {
+	display: grid;
+	gap: 8px;
+}
+
+.button-row {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.split-fields {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.inline-row {
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: end;
+}
+
+.entry-card {
+	display: grid;
+	gap: 12px;
+	padding: 12px;
+	border: 1px solid #d7dce2;
+	border-radius: 6px;
+	background: #ffffff;
+}
+
+.entry-card__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.entry-card__header h3,
+.entry-card__header h4 {
+	font-size: 14px;
+	line-height: 1.2;
+	letter-spacing: 0;
+	color: #202124;
+}
+
+.entry-subsection {
+	display: grid;
+	gap: 8px;
+}
+
+.field-error {
+	margin-top: -6px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #9f1239;
+}
+
 .preview-stage {
 	min-width: 840px;
 	min-height: 100%;
@@ -390,6 +452,16 @@
 	color: #374151;
 }
 
+.resume-entry ul {
+	margin: 4px 0 0;
+	padding-left: 15px;
+	color: #374151;
+}
+
+.resume-entry li {
+	margin-bottom: 2px;
+}
+
 @media (max-width: 1180px) {
 	.app-header {
 		align-items: flex-start;
@@ -422,6 +494,11 @@
 		min-width: 0;
 		overflow: auto;
 		place-items: start;
+	}
+
+	.inline-row,
+	.split-fields {
+		grid-template-columns: 1fr;
 	}
 }
 

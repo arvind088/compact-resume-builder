@@ -1,4 +1,13 @@
-import { TextArea, TextInput } from "../common/Field"
+import { AdditionalInformationEditor } from "./AdditionalInformationEditor"
+import { BasicsEditor } from "./BasicsEditor"
+import { CertificationsEditor } from "./CertificationsEditor"
+import { EducationEditor } from "./EducationEditor"
+import { ExperienceEditor } from "./ExperienceEditor"
+import { LanguagesEditor } from "./LanguagesEditor"
+import { ProjectsEditor } from "./ProjectsEditor"
+import { SectionControls } from "./SectionControls"
+import { SkillsEditor } from "./SkillsEditor"
+import { SummaryEditor } from "./SummaryEditor"
 import { SECTION_IDS, type SectionId } from "../../domain/resume.types"
 import { useResumeStore } from "../../store/resume.store"
 
@@ -6,11 +15,7 @@ export function ContentPanel() {
 	const resume = useResumeStore((state) => state.resume)
 	const selectedSectionId = useResumeStore((state) => state.selectedSectionId)
 	const setSelectedSection = useResumeStore((state) => state.setSelectedSection)
-	const updateBasicField = useResumeStore((state) => state.updateBasicField)
-	const updateSectionTitle = useResumeStore((state) => state.updateSectionTitle)
-	const setSectionVisibility = useResumeStore((state) => state.setSectionVisibility)
-	const updateSummary = useResumeStore((state) => state.updateSummary)
-	const selectedSection = selectedSectionId ? resume.sections[selectedSectionId] : null
+	const activeSectionId = selectedSectionId ?? "summary"
 
 	return (
 		<div className="panel-stack">
@@ -18,65 +23,23 @@ export function ContentPanel() {
 				<h2>Content</h2>
 			</div>
 
-			<form className="form-grid">
-				<TextInput
-					label="Full name"
-					value={resume.basics.fullName}
-					onChange={(event) => updateBasicField("fullName", event.target.value)}
-				/>
-				<TextInput
-					label="Professional title"
-					value={resume.basics.professionalTitle}
-					onChange={(event) => updateBasicField("professionalTitle", event.target.value)}
-				/>
-				<TextInput
-					label="Email"
-					value={resume.basics.email}
-					onChange={(event) => updateBasicField("email", event.target.value)}
-				/>
-				<TextInput
-					label="Location"
-					value={resume.basics.location}
-					onChange={(event) => updateBasicField("location", event.target.value)}
-				/>
-			</form>
+			<BasicsEditor />
 
 			<div className="section-list" aria-label="Resume sections">
 				{SECTION_IDS.map((sectionId) => (
 					<SectionListItem
 						key={sectionId}
 						sectionId={sectionId}
-						selected={selectedSectionId === sectionId}
+						selected={activeSectionId === sectionId}
 						onSelect={setSelectedSection}
 					/>
 				))}
 			</div>
 
-			{selectedSection ? (
-				<div className="section-editor" aria-label={`${selectedSection.title} editor`}>
-					<TextInput
-						label="Section title"
-						value={selectedSection.title}
-						onChange={(event) => updateSectionTitle(selectedSection.id, event.target.value)}
-					/>
-					<label className="checkbox-field">
-						<input
-							type="checkbox"
-							checked={selectedSection.visible}
-							onChange={(event) => setSectionVisibility(selectedSection.id, event.target.checked)}
-						/>
-						<span>Visible</span>
-					</label>
-					{selectedSection.id === "summary" ? (
-						<TextArea
-							label="Summary"
-							value={resume.sections.summary.content}
-							rows={5}
-							onChange={(event) => updateSummary(event.target.value)}
-						/>
-					) : null}
-				</div>
-			) : null}
+			<div className="section-editor" aria-label={`${resume.sections[activeSectionId].title} editor`}>
+				<SectionControls sectionId={activeSectionId} />
+				{renderSectionEditor(activeSectionId)}
+			</div>
 		</div>
 	)
 }
@@ -102,4 +65,25 @@ function SectionListItem({ sectionId, selected, onSelect }: SectionListItemProps
 			</span>
 		</button>
 	)
+}
+
+function renderSectionEditor(sectionId: SectionId) {
+	switch (sectionId) {
+		case "summary":
+			return <SummaryEditor />
+		case "experience":
+			return <ExperienceEditor />
+		case "education":
+			return <EducationEditor />
+		case "skills":
+			return <SkillsEditor />
+		case "languages":
+			return <LanguagesEditor />
+		case "projects":
+			return <ProjectsEditor />
+		case "certifications":
+			return <CertificationsEditor />
+		case "additionalInformation":
+			return <AdditionalInformationEditor />
+	}
 }

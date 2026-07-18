@@ -1,5 +1,15 @@
 import type { CSSProperties } from "react"
-import type { SectionId } from "../../domain/resume.types"
+import type {
+	AdditionalInformationSection,
+	CertificationsSection,
+	EducationSection,
+	ExperienceSection,
+	LanguagesSection,
+	ProjectsSection,
+	SectionId,
+	SkillsSection,
+	SummarySection,
+} from "../../domain/resume.types"
 import { useResumeStore } from "../../store/resume.store"
 
 type ResumeStyle = CSSProperties & {
@@ -39,6 +49,9 @@ export function ResumePreview() {
 						{resume.basics.email ? <li>{resume.basics.email}</li> : null}
 						{resume.basics.phone ? <li>{resume.basics.phone}</li> : null}
 						{resume.basics.location ? <li>{resume.basics.location}</li> : null}
+						{resume.basics.linkedin ? <li>{resume.basics.linkedin}</li> : null}
+						{resume.basics.github ? <li>{resume.basics.github}</li> : null}
+						{resume.basics.website ? <li>{resume.basics.website}</li> : null}
 					</ul>
 				</div>
 
@@ -73,65 +86,90 @@ function ResumeSection({ sectionId }: ResumeSectionProps) {
 	return (
 		<section className="resume-section">
 			<h3>{section.title}</h3>
-			{renderSectionContent(sectionId)}
+			{renderSectionContent(section)}
 		</section>
 	)
 }
 
-function renderSectionContent(sectionId: SectionId) {
-	const resume = useResumeStore.getState().resume
-
-	switch (sectionId) {
+function renderSectionContent(
+	section:
+		| SummarySection
+		| ExperienceSection
+		| EducationSection
+		| SkillsSection
+		| LanguagesSection
+		| ProjectsSection
+		| CertificationsSection
+		| AdditionalInformationSection,
+) {
+	switch (section.id) {
 		case "summary":
-			return <p>{resume.sections.summary.content || "Summary"}</p>
+			return <p>{section.content || "Summary"}</p>
 		case "experience":
-			return resume.sections.experience.items.map((item) => (
+			return section.items.map((item) => (
 				<div className="resume-entry" key={item.id}>
 					<strong>{item.jobTitle || "Job title"}</strong>
-					<span>{item.company || "Company"}</span>
+					<span>{[item.company || "Company", item.location].filter(Boolean).join(" | ")}</span>
+					<span>
+						{[item.startDate, item.isCurrent ? "Present" : item.endDate].filter(Boolean).join(" - ")}
+					</span>
+					{item.highlights.some(Boolean) ? (
+						<ul>
+							{item.highlights.filter(Boolean).map((highlight) => (
+								<li key={highlight}>{highlight}</li>
+							))}
+						</ul>
+					) : null}
 				</div>
 			))
 		case "education":
-			return resume.sections.education.items.map((item) => (
+			return section.items.map((item) => (
 				<div className="resume-entry" key={item.id}>
 					<strong>{item.degree || "Degree"}</strong>
-					<span>{item.institution || "Institution"}</span>
+					<span>{[item.institution || "Institution", item.location].filter(Boolean).join(" | ")}</span>
+					<span>{[item.startDate, item.endDate].filter(Boolean).join(" - ")}</span>
+					{item.description ? <p>{item.description}</p> : null}
 				</div>
 			))
 		case "skills":
-			return <p>{resume.sections.skills.items.map((item) => item.name).filter(Boolean).join(", ") || "Skills"}</p>
+			return <p>{section.items.map((item) => item.name).filter(Boolean).join(", ") || "Skills"}</p>
 		case "languages":
 			return (
 				<p>
-					{resume.sections.languages.items
+					{section.items
 						.map((item) => [item.name, item.level].filter(Boolean).join(" - "))
 						.filter(Boolean)
 						.join(", ") || "Languages"}
 				</p>
 			)
 		case "projects":
-			return resume.sections.projects.items.length ? (
-				resume.sections.projects.items.map((item) => (
+			return section.items.length ? (
+				section.items.map((item) => (
 					<div className="resume-entry" key={item.id}>
 						<strong>{item.name}</strong>
 						<span>{item.description}</span>
+						{item.technologies.some(Boolean) ? (
+							<span>{item.technologies.filter(Boolean).join(", ")}</span>
+						) : null}
+						{item.url ? <span>{item.url}</span> : null}
 					</div>
 				))
 			) : (
 				<p>Projects</p>
 			)
 		case "certifications":
-			return resume.sections.certifications.items.length ? (
-				resume.sections.certifications.items.map((item) => (
+			return section.items.length ? (
+				section.items.map((item) => (
 					<div className="resume-entry" key={item.id}>
 						<strong>{item.name}</strong>
-						<span>{item.issuer}</span>
+						<span>{[item.issuer, item.issueDate].filter(Boolean).join(" | ")}</span>
+						{item.url ? <span>{item.url}</span> : null}
 					</div>
 				))
 			) : (
 				<p>Certifications</p>
 			)
 		case "additionalInformation":
-			return <p>{resume.sections.additionalInformation.content || "Additional information"}</p>
+			return <p>{section.content || "Additional information"}</p>
 	}
 }
