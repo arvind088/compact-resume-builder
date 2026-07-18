@@ -1,4 +1,14 @@
-import type { ResumeDocument, ResumeLayout, ResumeTheme } from "./resume.types"
+import type {
+	CertificationEntry,
+	EducationEntry,
+	ExperienceEntry,
+	LanguageEntry,
+	ProjectEntry,
+	ResumeDocument,
+	ResumeLayout,
+	ResumeTheme,
+	SkillEntry,
+} from "./resume.types"
 
 export const defaultLayout: ResumeLayout = {
 	templateId: "compact-two-column",
@@ -101,7 +111,7 @@ export function createDefaultResume(): ResumeDocument {
 	}
 }
 
-function createEmptyExperience() {
+export function createEmptyExperience(): ExperienceEntry {
 	return {
 		id: createId(),
 		jobTitle: "",
@@ -114,7 +124,7 @@ function createEmptyExperience() {
 	}
 }
 
-function createEmptyEducation() {
+export function createEmptyEducation(): EducationEntry {
 	return {
 		id: createId(),
 		degree: "",
@@ -126,7 +136,42 @@ function createEmptyEducation() {
 	}
 }
 
-function createId(): string {
+export function createEmptySkill(): SkillEntry {
+	return {
+		id: createId(),
+		name: "",
+	}
+}
+
+export function createEmptyLanguage(): LanguageEntry {
+	return {
+		id: createId(),
+		name: "",
+		level: "Professional",
+	}
+}
+
+export function createEmptyProject(): ProjectEntry {
+	return {
+		id: createId(),
+		name: "",
+		description: "",
+		technologies: [],
+		url: "",
+	}
+}
+
+export function createEmptyCertification(): CertificationEntry {
+	return {
+		id: createId(),
+		name: "",
+		issuer: "",
+		issueDate: "",
+		url: "",
+	}
+}
+
+export function createId(): string {
 	if (typeof globalThis.crypto?.randomUUID === "function") {
 		return globalThis.crypto.randomUUID()
 	}
