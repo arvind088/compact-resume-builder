@@ -63,8 +63,10 @@ describe("content editors", () => {
 		await user.type(screen.getByLabelText("Language"), "English")
 		await user.selectOptions(screen.getByLabelText("Level"), "Fluent")
 
-		expect(screen.getByText("React")).toBeInTheDocument()
-		expect(screen.getByText("English - Fluent")).toBeInTheDocument()
+		const preview = screen.getByLabelText("Resume preview")
+		expect(within(preview).getByText("React")).toBeInTheDocument()
+		expect(within(preview).getByText("English")).toBeInTheDocument()
+		expect(within(preview).getByText("Fluent")).toBeInTheDocument()
 	})
 
 	it("adds projects and certifications", async () => {
@@ -84,7 +86,8 @@ describe("content editors", () => {
 
 		const preview = screen.getByLabelText("Resume preview")
 		expect(within(preview).getByText("Compact Resume Builder")).toBeInTheDocument()
-		expect(within(preview).getByText("React, TypeScript")).toBeInTheDocument()
+		expect(within(preview).getByText("React")).toBeInTheDocument()
+		expect(within(preview).getByText("TypeScript")).toBeInTheDocument()
 		expect(within(preview).getByText("Frontend Certificate")).toBeInTheDocument()
 		expect(within(preview).getByText("Example Academy")).toBeInTheDocument()
 	})
