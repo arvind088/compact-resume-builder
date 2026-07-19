@@ -3,7 +3,9 @@ import { ContentPanel } from "../components/editor/ContentPanel"
 import { DesignPanel } from "../components/design/DesignPanel"
 import { ResumePreview } from "../components/preview/ResumePreview"
 import { Button } from "../components/common/Button"
+import { ImportResumeButton } from "../components/common/ImportResumeButton"
 import { Tabs, type TabId } from "../components/common/Tabs"
+import { downloadResumeJson } from "../storage/resumeFile.service"
 import { useResumeStore } from "../store/resume.store"
 import { clearPersistedResume, useResumePersistence } from "./useResumePersistence"
 import "../styles/editor.css"
@@ -11,6 +13,7 @@ import "../styles/editor.css"
 export function AppShell() {
 	useResumePersistence()
 	const [activeTab, setActiveTab] = useState<TabId>("content")
+	const resume = useResumeStore((state) => state.resume)
 	const resumeTitle = useResumeStore((state) => state.resume.title)
 	const saveStatus = useResumeStore((state) => state.saveStatus)
 	const lastError = useResumeStore((state) => state.lastError)
@@ -38,10 +41,8 @@ export function AppShell() {
 							{lastError}
 						</span>
 					) : null}
-					<Button type="button" variant="secondary" disabled>
-						Import
-					</Button>
-					<Button type="button" variant="secondary" disabled>
+					<ImportResumeButton />
+					<Button type="button" variant="secondary" onClick={() => downloadResumeJson(resume)}>
 						Export JSON
 					</Button>
 					<Button type="button" onClick={() => window.print()}>
