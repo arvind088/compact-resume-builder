@@ -36,11 +36,20 @@ describe("content editors", () => {
 		expect(within(preview).getByText("Frontend engineer with product focus.")).toBeInTheDocument()
 	})
 
+	it("shows drag handles for section layout organization", () => {
+		render(<AppShell />)
+
+		expect(screen.getByLabelText("Resume section layout")).toBeInTheDocument()
+		expect(screen.getByLabelText("Main column")).toBeInTheDocument()
+		expect(screen.getByLabelText("Sidebar")).toBeInTheDocument()
+		expect(screen.getByLabelText("Drag Summary")).toBeInTheDocument()
+	})
+
 	it("edits experience fields and highlights", async () => {
 		const user = userEvent.setup()
 		render(<AppShell />)
 
-		await user.click(screen.getByRole("button", { name: /Experience/ }))
+		await selectSection(user, "Experience")
 		fireEvent.change(screen.getByLabelText("Job title"), {
 			target: { value: "Frontend Engineer" },
 		})
@@ -60,11 +69,11 @@ describe("content editors", () => {
 		const user = userEvent.setup()
 		render(<AppShell />)
 
-		await user.click(screen.getByRole("button", { name: /Skills/ }))
+		await selectSection(user, "Skills")
 		await user.click(screen.getByRole("button", { name: "Add skill" }))
 		await user.type(screen.getByLabelText("Skill 1"), "React")
 
-		await user.click(screen.getByRole("button", { name: /Languages/ }))
+		await selectSection(user, "Languages")
 		await user.click(screen.getByRole("button", { name: "Add language" }))
 		await user.type(screen.getByLabelText("Language"), "English")
 		await user.selectOptions(screen.getByLabelText("Level"), "Fluent")
@@ -75,11 +84,31 @@ describe("content editors", () => {
 		expect(within(preview).getByText("Fluent")).toBeInTheDocument()
 	})
 
+	it("reorders repeatable entries from editor controls", async () => {
+		const user = userEvent.setup()
+		render(<AppShell />)
+
+		await selectSection(user, "Skills")
+		await user.click(screen.getByRole("button", { name: "Add skill" }))
+		await user.click(screen.getByRole("button", { name: "Add skill" }))
+		fireEvent.change(screen.getByLabelText("Skill 1"), {
+			target: { value: "React" },
+		})
+		fireEvent.change(screen.getByLabelText("Skill 2"), {
+			target: { value: "TypeScript" },
+		})
+
+		await user.click(screen.getByRole("button", { name: "Move Skill 1 down" }))
+
+		expect(screen.getByLabelText("Skill 1")).toHaveValue("TypeScript")
+		expect(screen.getByLabelText("Skill 2")).toHaveValue("React")
+	})
+
 	it("adds projects and certifications", async () => {
 		const user = userEvent.setup()
 		render(<AppShell />)
 
-		await user.click(screen.getByRole("button", { name: /Projects/ }))
+		await selectSection(user, "Projects")
 		await user.click(screen.getByRole("button", { name: "Add project" }))
 		fireEvent.change(screen.getByLabelText("Project name"), {
 			target: { value: "Compact Resume Builder" },
@@ -91,7 +120,7 @@ describe("content editors", () => {
 			target: { value: "React, TypeScript" },
 		})
 
-		await user.click(screen.getByRole("button", { name: /Certifications/ }))
+		await selectSection(user, "Certifications")
 		await user.click(screen.getByRole("button", { name: "Add certification" }))
 		fireEvent.change(screen.getByLabelText("Certification name"), {
 			target: { value: "Frontend Certificate" },
@@ -108,3 +137,9 @@ describe("content editors", () => {
 		expect(within(preview).getByText("Example Academy")).toBeInTheDocument()
 	})
 })
+
+async function selectSection(user: ReturnType<typeof userEvent.setup>, sectionName: string) {
+	const organizer = screen.getByLabelText("Resume section layout")
+
+	await user.click(within(organizer).getByRole("button", { name: `Select ${sectionName}` }))
+}

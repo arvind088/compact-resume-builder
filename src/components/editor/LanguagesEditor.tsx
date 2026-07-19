@@ -2,6 +2,7 @@ import { Button } from "../common/Button"
 import { Select, TextInput } from "../common/Field"
 import type { LanguageLevel } from "../../domain/resume.types"
 import { useResumeStore } from "../../store/resume.store"
+import { EntryOrderControls } from "./EntryOrderControls"
 
 const languageLevels: LanguageLevel[] = [
 	"Basic",
@@ -16,6 +17,8 @@ export function LanguagesEditor() {
 	const addLanguage = useResumeStore((state) => state.addLanguage)
 	const updateLanguage = useResumeStore((state) => state.updateLanguage)
 	const removeLanguage = useResumeStore((state) => state.removeLanguage)
+	const reorderLanguages = useResumeStore((state) => state.reorderLanguages)
+	const itemIds = items.map((item) => item.id)
 
 	return (
 		<div className="entry-stack">
@@ -23,9 +26,18 @@ export function LanguagesEditor() {
 				<div className="entry-card" key={item.id}>
 					<div className="entry-card__header">
 						<h3>Language {index + 1}</h3>
-						<Button type="button" variant="danger" onClick={() => removeLanguage(item.id)}>
-							Remove
-						</Button>
+						<div className="entry-card__actions">
+							<EntryOrderControls
+								index={index}
+								itemId={item.id}
+								itemIds={itemIds}
+								label={`Language ${index + 1}`}
+								onReorder={reorderLanguages}
+							/>
+							<Button type="button" variant="danger" onClick={() => removeLanguage(item.id)}>
+								Remove
+							</Button>
+						</div>
 					</div>
 					<div className="split-fields">
 						<TextInput

@@ -1,15 +1,18 @@
 import { Button } from "../common/Button"
 import { TextInput } from "../common/Field"
 import { useResumeStore } from "../../store/resume.store"
+import { EntryOrderControls } from "./EntryOrderControls"
 
 export function ExperienceEditor() {
 	const items = useResumeStore((state) => state.resume.sections.experience.items)
 	const addExperience = useResumeStore((state) => state.addExperience)
 	const updateExperience = useResumeStore((state) => state.updateExperience)
 	const removeExperience = useResumeStore((state) => state.removeExperience)
+	const reorderExperience = useResumeStore((state) => state.reorderExperience)
 	const addExperienceHighlight = useResumeStore((state) => state.addExperienceHighlight)
 	const updateExperienceHighlight = useResumeStore((state) => state.updateExperienceHighlight)
 	const removeExperienceHighlight = useResumeStore((state) => state.removeExperienceHighlight)
+	const itemIds = items.map((item) => item.id)
 
 	return (
 		<div className="entry-stack">
@@ -17,9 +20,18 @@ export function ExperienceEditor() {
 				<div className="entry-card" key={item.id}>
 					<div className="entry-card__header">
 						<h3>Experience {entryIndex + 1}</h3>
-						<Button type="button" variant="danger" onClick={() => removeExperience(item.id)}>
-							Remove
-						</Button>
+						<div className="entry-card__actions">
+							<EntryOrderControls
+								index={entryIndex}
+								itemId={item.id}
+								itemIds={itemIds}
+								label={`Experience ${entryIndex + 1}`}
+								onReorder={reorderExperience}
+							/>
+							<Button type="button" variant="danger" onClick={() => removeExperience(item.id)}>
+								Remove
+							</Button>
+						</div>
 					</div>
 					<div className="form-grid">
 						<TextInput

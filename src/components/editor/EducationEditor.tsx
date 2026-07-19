@@ -1,12 +1,15 @@
 import { Button } from "../common/Button"
 import { TextArea, TextInput } from "../common/Field"
 import { useResumeStore } from "../../store/resume.store"
+import { EntryOrderControls } from "./EntryOrderControls"
 
 export function EducationEditor() {
 	const items = useResumeStore((state) => state.resume.sections.education.items)
 	const addEducation = useResumeStore((state) => state.addEducation)
 	const updateEducation = useResumeStore((state) => state.updateEducation)
 	const removeEducation = useResumeStore((state) => state.removeEducation)
+	const reorderEducation = useResumeStore((state) => state.reorderEducation)
+	const itemIds = items.map((item) => item.id)
 
 	return (
 		<div className="entry-stack">
@@ -14,9 +17,18 @@ export function EducationEditor() {
 				<div className="entry-card" key={item.id}>
 					<div className="entry-card__header">
 						<h3>Education {entryIndex + 1}</h3>
-						<Button type="button" variant="danger" onClick={() => removeEducation(item.id)}>
-							Remove
-						</Button>
+						<div className="entry-card__actions">
+							<EntryOrderControls
+								index={entryIndex}
+								itemId={item.id}
+								itemIds={itemIds}
+								label={`Education ${entryIndex + 1}`}
+								onReorder={reorderEducation}
+							/>
+							<Button type="button" variant="danger" onClick={() => removeEducation(item.id)}>
+								Remove
+							</Button>
+						</div>
 					</div>
 					<div className="form-grid">
 						<TextInput

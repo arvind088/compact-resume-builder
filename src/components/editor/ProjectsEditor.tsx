@@ -1,12 +1,15 @@
 import { Button } from "../common/Button"
 import { TextArea, TextInput } from "../common/Field"
 import { useResumeStore } from "../../store/resume.store"
+import { EntryOrderControls } from "./EntryOrderControls"
 
 export function ProjectsEditor() {
 	const items = useResumeStore((state) => state.resume.sections.projects.items)
 	const addProject = useResumeStore((state) => state.addProject)
 	const updateProject = useResumeStore((state) => state.updateProject)
 	const removeProject = useResumeStore((state) => state.removeProject)
+	const reorderProjects = useResumeStore((state) => state.reorderProjects)
+	const itemIds = items.map((item) => item.id)
 
 	return (
 		<div className="entry-stack">
@@ -14,9 +17,18 @@ export function ProjectsEditor() {
 				<div className="entry-card" key={item.id}>
 					<div className="entry-card__header">
 						<h3>Project {index + 1}</h3>
-						<Button type="button" variant="danger" onClick={() => removeProject(item.id)}>
-							Remove
-						</Button>
+						<div className="entry-card__actions">
+							<EntryOrderControls
+								index={index}
+								itemId={item.id}
+								itemIds={itemIds}
+								label={`Project ${index + 1}`}
+								onReorder={reorderProjects}
+							/>
+							<Button type="button" variant="danger" onClick={() => removeProject(item.id)}>
+								Remove
+							</Button>
+						</div>
 					</div>
 					<div className="form-grid">
 						<TextInput

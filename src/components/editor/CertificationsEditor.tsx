@@ -1,12 +1,15 @@
 import { Button } from "../common/Button"
 import { TextInput } from "../common/Field"
 import { useResumeStore } from "../../store/resume.store"
+import { EntryOrderControls } from "./EntryOrderControls"
 
 export function CertificationsEditor() {
 	const items = useResumeStore((state) => state.resume.sections.certifications.items)
 	const addCertification = useResumeStore((state) => state.addCertification)
 	const updateCertification = useResumeStore((state) => state.updateCertification)
 	const removeCertification = useResumeStore((state) => state.removeCertification)
+	const reorderCertifications = useResumeStore((state) => state.reorderCertifications)
+	const itemIds = items.map((item) => item.id)
 
 	return (
 		<div className="entry-stack">
@@ -14,9 +17,18 @@ export function CertificationsEditor() {
 				<div className="entry-card" key={item.id}>
 					<div className="entry-card__header">
 						<h3>Certification {index + 1}</h3>
-						<Button type="button" variant="danger" onClick={() => removeCertification(item.id)}>
-							Remove
-						</Button>
+						<div className="entry-card__actions">
+							<EntryOrderControls
+								index={index}
+								itemId={item.id}
+								itemIds={itemIds}
+								label={`Certification ${index + 1}`}
+								onReorder={reorderCertifications}
+							/>
+							<Button type="button" variant="danger" onClick={() => removeCertification(item.id)}>
+								Remove
+							</Button>
+						</div>
 					</div>
 					<div className="form-grid">
 						<TextInput
