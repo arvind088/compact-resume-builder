@@ -10,6 +10,16 @@ A local-first resume builder built with React, TypeScript, Vite, Zustand, Zod, a
 - JSON import and export
 - Print-to-PDF flow for saving the resume
 
+## Roadmap
+
+- Add a screenshot-matched compact template based on the provided reference image:
+  - Dense A4 resume layout with a wide main column and narrow right sidebar
+  - Large uppercase name, blue professional title, and compact contact metadata row
+  - Thin section dividers with small uppercase headings
+  - Experience entries with role, company, date range, location, and bullet highlights
+  - Sidebar language proficiency dots and compact skill chips
+  - Projects, certifications, education, and additional information styled to match the reference
+
 ## Local Development
 
 ```bash
