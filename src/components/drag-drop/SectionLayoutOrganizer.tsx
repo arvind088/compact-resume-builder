@@ -139,9 +139,6 @@ function SortableSectionItem({ sectionId }: SortableSectionItemProps) {
 				onClick={() => setSelectedSection(sectionId)}
 			>
 				<span>{section.title}</span>
-				<span className={section.visible ? "visibility-pill" : "visibility-pill visibility-pill--hidden"}>
-					{section.visible ? "Shown" : "Hidden"}
-				</span>
 			</button>
 			<button
 				type="button"
