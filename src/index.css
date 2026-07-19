@@ -18,6 +18,26 @@ body {
 	margin: 0;
 }
 
+@media print {
+	@page {
+		size: A4;
+		margin: 0;
+	}
+
+	:root,
+	body,
+	#root {
+		width: 210mm;
+		min-height: 297mm;
+		background: #ffffff;
+	}
+
+	* {
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+}
+
 button,
 input,
 select,

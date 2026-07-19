@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest"
-import { cleanup, render, screen } from "@testing-library/react"
+import { cleanup, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createDefaultResume } from "../domain/resume.defaults"
@@ -21,6 +21,7 @@ describe("AppShell", () => {
 			createObjectURL: vi.fn(() => "blob:resume"),
 			revokeObjectURL: vi.fn(),
 		})
+		vi.spyOn(window, "print").mockImplementation(() => undefined)
 		vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
 	})
 
@@ -70,6 +71,17 @@ describe("AppShell", () => {
 		expect(URL.createObjectURL).toHaveBeenCalled()
 		expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled()
 		expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:resume")
+	})
+
+	it("opens the preview tab before printing the resume", async () => {
+		const user = userEvent.setup()
+		render(<AppShell />)
+
+		await user.click(screen.getByRole("button", { name: "Design" }))
+		await user.click(screen.getByRole("button", { name: "Print PDF" }))
+
+		expect(screen.getByRole("button", { name: "Preview" })).toHaveAttribute("aria-current", "page")
+		await waitFor(() => expect(window.print).toHaveBeenCalled())
 	})
 
 	it("imports a valid resume JSON file after confirmation", async () => {

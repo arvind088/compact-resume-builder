@@ -65,6 +65,7 @@
 	gap: 5px;
 	margin-bottom: var(--resume-section-spacing);
 	break-inside: avoid;
+	page-break-inside: avoid;
 }
 
 .section-heading {
@@ -89,6 +90,8 @@
 	display: grid;
 	gap: 2px;
 	margin-bottom: 7px;
+	break-inside: avoid;
+	page-break-inside: avoid;
 }
 
 .resume-entry__line {
@@ -176,7 +179,14 @@
 	.resume-page {
 		width: 210mm;
 		min-height: 297mm;
+		margin: 0;
 		box-shadow: none;
+	}
+
+	.resume-header,
+	.section-heading {
+		break-after: avoid;
+		page-break-after: avoid;
 	}
 
 	.resume-placeholder {

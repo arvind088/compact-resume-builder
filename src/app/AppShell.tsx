@@ -26,6 +26,11 @@ export function AppShell() {
 		}
 	}
 
+	function handlePrint() {
+		setActiveTab("preview")
+		window.setTimeout(() => window.print(), 0)
+	}
+
 	return (
 		<div className="app-shell">
 			<header className="app-header">
@@ -45,7 +50,7 @@ export function AppShell() {
 					<Button type="button" variant="secondary" onClick={() => downloadResumeJson(resume)}>
 						Export JSON
 					</Button>
-					<Button type="button" onClick={() => window.print()}>
+					<Button type="button" onClick={handlePrint}>
 						Print PDF
 					</Button>
 					<Button type="button" variant="danger" onClick={handleReset}>
