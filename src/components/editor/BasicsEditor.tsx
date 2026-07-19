@@ -2,12 +2,19 @@ import { TextInput } from "../common/Field"
 import { useResumeStore } from "../../store/resume.store"
 
 export function BasicsEditor() {
+	const resumeTitle = useResumeStore((state) => state.resume.title)
 	const basics = useResumeStore((state) => state.resume.basics)
+	const updateResumeTitle = useResumeStore((state) => state.updateResumeTitle)
 	const updateBasicField = useResumeStore((state) => state.updateBasicField)
 	const emailInvalid = basics.email !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(basics.email)
 
 	return (
 		<form className="form-grid" aria-label="Personal information">
+			<TextInput
+				label="Resume title"
+				value={resumeTitle}
+				onChange={(event) => updateResumeTitle(event.target.value)}
+			/>
 			<TextInput
 				label="Full name"
 				value={basics.fullName}

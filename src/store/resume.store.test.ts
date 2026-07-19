@@ -23,6 +23,14 @@ describe("useResumeStore", () => {
 		expect(state.saveStatus).toBe("unsaved")
 	})
 
+	it("updates the resume title and marks the resume unsaved", () => {
+		useResumeStore.getState().updateResumeTitle("Frontend Resume")
+
+		const state = useResumeStore.getState()
+		expect(state.resume.title).toBe("Frontend Resume")
+		expect(state.saveStatus).toBe("unsaved")
+	})
+
 	it("does not touch resume timestamps when selecting a section", () => {
 		const previousUpdatedAt = useResumeStore.getState().resume.updatedAt
 

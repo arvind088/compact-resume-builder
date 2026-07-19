@@ -46,9 +46,12 @@ describe("AppShell", () => {
 		const user = userEvent.setup()
 		render(<AppShell />)
 
+		await user.clear(screen.getByLabelText("Resume title"))
+		await user.type(screen.getByLabelText("Resume title"), "Frontend Resume")
 		await user.type(screen.getByLabelText("Full name"), "Arvind Kumar")
 		await user.type(screen.getByLabelText("Professional title"), "Software Engineer")
 
+		expect(screen.getByRole("heading", { name: "Frontend Resume" })).toBeInTheDocument()
 		expect(screen.getByRole("heading", { name: "Arvind Kumar" })).toBeInTheDocument()
 		expect(screen.getByText("Software Engineer")).toBeInTheDocument()
 	})
@@ -65,11 +68,16 @@ describe("AppShell", () => {
 	it("exports the current resume as JSON", async () => {
 		const user = userEvent.setup()
 		render(<AppShell />)
+		const anchor = document.createElement("a")
+		vi.spyOn(document, "createElement").mockReturnValue(anchor)
 
+		await user.clear(screen.getByLabelText("Resume title"))
+		await user.type(screen.getByLabelText("Resume title"), "Frontend Resume")
 		await user.click(screen.getByRole("button", { name: "Export JSON" }))
 
 		expect(URL.createObjectURL).toHaveBeenCalled()
 		expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled()
+		expect(anchor.download).toBe("frontend-resume.resume.json")
 		expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:resume")
 	})
 

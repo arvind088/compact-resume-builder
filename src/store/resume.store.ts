@@ -36,6 +36,7 @@ export interface ResumeStore {
 	setSaveStatus(saveStatus: SaveStatus): void
 	setLastError(error: string | null): void
 
+	updateResumeTitle(title: string): void
 	updateBasicField(field: keyof ResumeBasics, value: string): void
 	updateSectionTitle(sectionId: SectionId, title: string): void
 	setSectionVisibility(sectionId: SectionId, visible: boolean): void
@@ -103,6 +104,16 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
 		set({ lastError: error })
 	},
 
+	updateResumeTitle: (title) => {
+		set((state) =>
+			markUnsaved({
+				resume: touch({
+					...state.resume,
+					title,
+				}),
+			}),
+		)
+	},
 	updateBasicField: (field, value) => {
 		set((state) =>
 			markUnsaved({
