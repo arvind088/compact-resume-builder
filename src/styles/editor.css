@@ -73,6 +73,14 @@
 	border-color: #fecdd3;
 }
 
+.save-error {
+	max-width: 240px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.2;
+	color: #9f1239;
+}
+
 .button {
 	min-height: 34px;
 	padding: 7px 12px;

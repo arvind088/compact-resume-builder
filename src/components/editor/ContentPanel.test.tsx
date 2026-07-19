@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest"
-import { cleanup, render, screen, within } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { AppShell } from "../../app/AppShell"
@@ -41,9 +41,15 @@ describe("content editors", () => {
 		render(<AppShell />)
 
 		await user.click(screen.getByRole("button", { name: /Experience/ }))
-		await user.type(screen.getByLabelText("Job title"), "Frontend Engineer")
-		await user.type(screen.getByLabelText("Company"), "Acme Labs")
-		await user.type(screen.getByLabelText("Highlight 1"), "Built reusable resume components")
+		fireEvent.change(screen.getByLabelText("Job title"), {
+			target: { value: "Frontend Engineer" },
+		})
+		fireEvent.change(screen.getByLabelText("Company"), {
+			target: { value: "Acme Labs" },
+		})
+		fireEvent.change(screen.getByLabelText("Highlight 1"), {
+			target: { value: "Built reusable resume components" },
+		})
 
 		expect(screen.getByText("Frontend Engineer")).toBeInTheDocument()
 		expect(screen.getByText("Acme Labs")).toBeInTheDocument()
@@ -75,14 +81,24 @@ describe("content editors", () => {
 
 		await user.click(screen.getByRole("button", { name: /Projects/ }))
 		await user.click(screen.getByRole("button", { name: "Add project" }))
-		await user.type(screen.getByLabelText("Project name"), "Compact Resume Builder")
-		await user.type(screen.getByLabelText("Project description"), "Local-first resume editor")
-		await user.type(screen.getByLabelText("Technologies"), "React, TypeScript")
+		fireEvent.change(screen.getByLabelText("Project name"), {
+			target: { value: "Compact Resume Builder" },
+		})
+		fireEvent.change(screen.getByLabelText("Project description"), {
+			target: { value: "Local-first resume editor" },
+		})
+		fireEvent.change(screen.getByLabelText("Technologies"), {
+			target: { value: "React, TypeScript" },
+		})
 
 		await user.click(screen.getByRole("button", { name: /Certifications/ }))
 		await user.click(screen.getByRole("button", { name: "Add certification" }))
-		await user.type(screen.getByLabelText("Certification name"), "Frontend Certificate")
-		await user.type(screen.getByLabelText("Issuer"), "Example Academy")
+		fireEvent.change(screen.getByLabelText("Certification name"), {
+			target: { value: "Frontend Certificate" },
+		})
+		fireEvent.change(screen.getByLabelText("Issuer"), {
+			target: { value: "Example Academy" },
+		})
 
 		const preview = screen.getByLabelText("Resume preview")
 		expect(within(preview).getByText("Compact Resume Builder")).toBeInTheDocument()

@@ -45,6 +45,7 @@ export interface ResumeStore {
 	resetTheme(): void
 	resetResume(): void
 	replaceResume(resume: ResumeDocument): void
+	hydrateResume(resume: ResumeDocument): void
 
 	addExperience(): void
 	updateExperience(id: string, patch: Partial<Omit<ExperienceEntry, "id">>): void
@@ -215,6 +216,14 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
 			resume,
 			selectedSectionId: null,
 			saveStatus: "unsaved",
+			lastError: null,
+		})
+	},
+	hydrateResume: (resume) => {
+		set({
+			resume,
+			selectedSectionId: null,
+			saveStatus: "saved",
 			lastError: null,
 		})
 	},

@@ -5,16 +5,20 @@ import { ResumePreview } from "../components/preview/ResumePreview"
 import { Button } from "../components/common/Button"
 import { Tabs, type TabId } from "../components/common/Tabs"
 import { useResumeStore } from "../store/resume.store"
+import { clearPersistedResume, useResumePersistence } from "./useResumePersistence"
 import "../styles/editor.css"
 
 export function AppShell() {
+	useResumePersistence()
 	const [activeTab, setActiveTab] = useState<TabId>("content")
 	const resumeTitle = useResumeStore((state) => state.resume.title)
 	const saveStatus = useResumeStore((state) => state.saveStatus)
+	const lastError = useResumeStore((state) => state.lastError)
 	const resetResume = useResumeStore((state) => state.resetResume)
 
 	function handleReset() {
 		if (window.confirm("Reset this resume?")) {
+			clearPersistedResume()
 			resetResume()
 		}
 	}
@@ -29,6 +33,11 @@ export function AppShell() {
 
 				<div className="app-header__actions" aria-label="Resume actions">
 					<span className={`save-status save-status--${saveStatus}`}>{saveStatus}</span>
+					{lastError ? (
+						<span className="save-error" role="status">
+							{lastError}
+						</span>
+					) : null}
 					<Button type="button" variant="secondary" disabled>
 						Import
 					</Button>
